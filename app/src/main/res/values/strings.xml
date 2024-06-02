@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">LocApp</string>
+    <string name="home">Início</string>
+    <string name="customers">Clientes</string>
+    <string name="customer">Cliente</string>
+    <string name="new_customer">Novo Cliente</string>
+    <string name="products">Móveis</string>
+    <string name="product">Móvel</string>
+    <string name="new_product">Novo Móvel</string>
+    <string name="product_name">Nome do móvel</string>
+    <string name="rent">Locação</string>
+    <string name="rentals">Locações</string>
+    <string name="new_rent">Nova Locação</string>
+    <string name="current_rentals">Locações desta semana</string>
+    <string name="upcoming_rentals">Próximas Locações</string>
+    <string name="quantity">Quantidade</string>
+    <string name="unavailable">Indisponíveis</string>
+    <string name="available">Disponíveis</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Salvar</string>
+    <string name="add">Adicionar</string>
+    <string name="update">Atualizar</string>
+    <string name="delete">Deletar</string>
+    <string name="next">Continuar</string>
+    <string name="back">Voltar</string>
+    <string name="something_went_wrong">Ocorreu algum erro</string>
+</resources>
