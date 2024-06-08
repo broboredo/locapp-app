@@ -8,6 +8,7 @@ import com.abcfestas.locapp.view.screens.customer.NewCustomerFormState
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -25,6 +26,11 @@ interface IApi {
 
     @POST("customers")
     suspend fun createCustomer(
+        @Body customer: NewCustomerFormState
+    ): CustomerResponse
+
+    @PUT("customers/{id}")
+    suspend fun updateCustomer(
         @Body customer: NewCustomerFormState
     ): CustomerResponse
 

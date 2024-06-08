@@ -46,4 +46,15 @@ class CustomerRepository(
 
         return Resource.Success(response)
     }
+
+    suspend fun updateCustomer(id: Int, customer: NewCustomerFormState): Resource<CustomerResponse> {
+        val response = try {
+            api.updateCustomer(customer)
+        } catch (e: Exception) {
+            Log.d("ERROR: CustomerRepository::updateCustomer", e.message.toString())
+            return Resource.Error(e.message.toString()) // TODO: improvement message
+        }
+
+        return Resource.Success(response)
+    }
 }
