@@ -1,5 +1,6 @@
 package com.abcfestas.locapp.view.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -22,7 +23,6 @@ import com.abcfestas.locapp.ui.theme.GrayLight
 import com.abcfestas.locapp.ui.theme.Green500
 import compose.icons.Octicons
 import compose.icons.octicons.ArrowLeft24
-import compose.icons.octicons.ChevronLeft24
 import compose.icons.octicons.ChevronRight24
 import androidx.compose.material3.Button as MaterialButton
 
@@ -33,20 +33,45 @@ fun Button(
     enabled: Boolean = true,
     loading: Boolean = false,
     onClick: () -> Unit,
+    outline: Boolean = false,
+    mainColor: Color = Green500
 ) {
-    MaterialButton(
-        modifier = modifier.fillMaxWidth(),
-        onClick = onClick,
-        enabled = enabled,
-        shape = RoundedCornerShape(8.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Green500,
-            contentColor = Color.White,
-            disabledContainerColor = GrayLight,
-            disabledContentColor = Gray
-        )
-    ) {
-        Text(text = label)
+    if (!outline) {
+        MaterialButton(
+            modifier = modifier.fillMaxWidth(),
+            onClick = onClick,
+            enabled = enabled && !loading,
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = mainColor,
+                contentColor = Color.White,
+                disabledContainerColor = GrayLight,
+                disabledContentColor = Gray
+            )
+        ) {
+            Text(text = label)
+        }
+    } else {
+        MaterialButton(
+            modifier = modifier
+                .border(
+                    width = 1.dp,
+                    color = mainColor,
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .fillMaxWidth(),
+            onClick = onClick,
+            enabled = enabled && !loading,
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = mainColor,
+                disabledContainerColor = GrayLight,
+                disabledContentColor = Gray
+            )
+        ) {
+            Text(text = label)
+        }
     }
 }
 
@@ -106,33 +131,5 @@ fun CancelButton(
                 modifier = modifier.padding(0.dp).fillMaxSize()
             )
         }
-    }
-}
-
-@Composable
-fun BackButton(
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    loading: Boolean = false,
-    onClick: () -> Unit
-) {
-    MaterialButton(
-        modifier = modifier.size(32.dp),
-        shape = CircleShape,
-        onClick = onClick,
-        enabled = enabled,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = GrayLight,
-            contentColor = Color.Black,
-            disabledContainerColor = GrayLight,
-            disabledContentColor = Color.White
-        ),
-        contentPadding = PaddingValues(0.dp)
-    ) {
-        Icon(
-            imageVector = Octicons.ChevronLeft24,
-            contentDescription = "Back",
-            modifier = modifier.padding(0.dp)
-        )
     }
 }

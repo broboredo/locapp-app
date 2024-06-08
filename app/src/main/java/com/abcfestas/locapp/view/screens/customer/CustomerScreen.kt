@@ -35,10 +35,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -47,9 +47,9 @@ import com.abcfestas.locapp.R
 import com.abcfestas.locapp.data.models.Customer
 import com.abcfestas.locapp.ui.theme.Green400
 import com.abcfestas.locapp.ui.theme.Green500
-import com.abcfestas.locapp.ui.theme.Red
 import com.abcfestas.locapp.ui.theme.Typography
 import com.abcfestas.locapp.view.components.Button
+import com.abcfestas.locapp.view.components.LostConnection
 import com.abcfestas.locapp.view.navigation.ScreensEnum
 import com.abcfestas.locapp.viewmodel.customer.CustomerViewModel
 import com.abcfestas.locapp.viewmodel.viewModelFactory
@@ -68,7 +68,6 @@ fun CustomerScreen(
     ) {
         Column(modifier = Modifier.weight(1f, false)) {
             Text(text = stringResource(R.string.customers), style = Typography.titleLarge)
-            // Spacer(modifier = Modifier.height(16.dp))
 
             ListCustomers()
         }
@@ -101,6 +100,8 @@ fun ListCustomers(
 
     // search
     var expanded by rememberSaveable { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.loadCustomers()
@@ -162,7 +163,7 @@ fun ListCustomers(
                     color = Green500
                 )
             } else if (error.isNotEmpty()) {
-                Text(text = error, color = Red, fontSize = 16.sp)
+                LostConnection(message = error) { viewModel.loadCustomers() }
             }
         }
     }

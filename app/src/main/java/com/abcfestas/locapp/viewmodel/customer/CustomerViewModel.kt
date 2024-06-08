@@ -70,6 +70,7 @@ class CustomerViewModel (
                 is Resource.Error -> {
                     Log.d("Customer view model", "loadCustomers - ERROR: ${response.message}")
                     currentPage.value = 1
+                    customers.value =  listOf()
                     loading.value = false
                     error.value = response.message.toString()
                     hasNextPage.value = false
