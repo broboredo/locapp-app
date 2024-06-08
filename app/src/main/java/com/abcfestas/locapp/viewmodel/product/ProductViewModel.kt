@@ -32,7 +32,7 @@ class ProductViewModel (
             when (response) {
                 is Resource.Success -> {
                     Log.d("Product view model", "loadProducts - SUCCESS")
-                    val productEntries = response.data!!.data.mapIndexed { _, entry ->
+                    val productEntries = response.data!!.data.data.mapIndexed { _, entry ->
                         Product(
                             id = entry.ID,
                             name = entry.Name,

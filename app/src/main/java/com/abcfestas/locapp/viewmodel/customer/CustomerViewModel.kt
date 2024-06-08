@@ -28,7 +28,7 @@ class CustomerViewModel (
             when (response) {
                 is Resource.Success -> {
                     Log.d("Customer view model", "loadCustomers - SUCCESS")
-                    val customerEntries = response.data!!.data.mapIndexed { _, entry ->
+                    val customerEntries = response.data!!.data.data.mapIndexed { _, entry ->
                         Customer(
                             id = entry.ID,
                             name = entry.Name,
