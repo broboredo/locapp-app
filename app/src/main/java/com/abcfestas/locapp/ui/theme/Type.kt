@@ -58,5 +58,17 @@ val Typography = Typography(
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp,
         color = Gray
+    ),
+    displaySmall = TextStyle(
+        fontFamily = ManropeFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 9.sp,
+        color = Black
+    ),
+    displayMedium = TextStyle(
+        fontFamily = ManropeFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 11.sp,
+        color = Black
     )
 )
