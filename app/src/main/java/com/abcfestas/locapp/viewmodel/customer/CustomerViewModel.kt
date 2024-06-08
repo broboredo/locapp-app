@@ -40,7 +40,7 @@ class CustomerViewModel (
                     // TODO: pagination
                     //currentPage++
                     error.value = ""
-                    customers.value += customerEntries
+                    customers.value = customerEntries
                     loading.value = false
                 }
                 is Resource.Error -> {

@@ -4,6 +4,7 @@
     <string name="customers">Clientes</string>
     <string name="customer">Cliente</string>
     <string name="new_customer">Novo Cliente</string>
+    <string name="customer_created_successfully">Cliente criado</string>
     <string name="products">Móveis</string>
     <string name="product">Móvel</string>
     <string name="new_product">Novo Móvel</string>

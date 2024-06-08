@@ -105,4 +105,7 @@ dependencies {
     // Coil
     implementation("io.coil-kt:coil:$coilVersion")
     implementation("com.google.accompanist:accompanist-coil:$accompanistVersion")
+
+    // Viewmodel compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="required">Este campo é obrigatório</string>
+    <string name="invalid_email">Este não é um e-mail válido</string>
+    <string name="max_chars">O máximo de caracteres são %1$d caracteres</string>
+    <string name="min_chars">O mínimo de caracteres são %1$d caracteres</string>
+</resources>

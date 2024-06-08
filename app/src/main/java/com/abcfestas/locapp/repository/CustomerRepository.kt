@@ -5,6 +5,7 @@ import com.abcfestas.locapp.data.remote.IApi
 import com.abcfestas.locapp.data.remote.responses.customer.CustomerListResponse
 import com.abcfestas.locapp.data.remote.responses.customer.CustomerResponse
 import com.abcfestas.locapp.util.Resource
+import com.abcfestas.locapp.view.screens.customer.NewCustomerFormState
 
 class CustomerRepository(
     private val api: IApi
@@ -29,6 +30,17 @@ class CustomerRepository(
             api.getCustomerById(id)
         } catch (e: Exception) {
             Log.d("ERROR: CustomerRepository::getCustomerById", e.message.toString())
+            return Resource.Error(e.message.toString()) // TODO: improvement message
+        }
+
+        return Resource.Success(response)
+    }
+
+    suspend fun createCustomer(customer: NewCustomerFormState): Resource<CustomerResponse> {
+        val response = try {
+            api.createCustomer(customer)
+        } catch (e: Exception) {
+            Log.d("ERROR: CustomerRepository::createCustomer", e.message.toString())
             return Resource.Error(e.message.toString()) // TODO: improvement message
         }
 
