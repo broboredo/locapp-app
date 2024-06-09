@@ -38,7 +38,8 @@ import com.abcfestas.locapp.view.screens.HomeScreen
 import com.abcfestas.locapp.view.screens.RentScreen
 import com.abcfestas.locapp.view.screens.customer.CustomerFormScreen
 import com.abcfestas.locapp.view.screens.customer.CustomerScreen
-import com.abcfestas.locapp.view.screens.product.NewProductStepOneScreen
+import com.abcfestas.locapp.view.screens.product.CreateProductScreen
+// import com.abcfestas.locapp.view.screens.product.NewProductStepOneScreen
 import com.abcfestas.locapp.view.screens.product.ProductDetailScreen
 import com.abcfestas.locapp.view.screens.product.ProductScreen
 
@@ -152,7 +153,8 @@ fun AppNavigation() {
                 ProductDetailScreen(navController, productId)
             }
             composable(route = ScreensEnum.NewProductStepOneScreen.route) {
-                NewProductStepOneScreen(navController)
+                // NewProductStepOneScreen(navController)
+                CreateProductScreen(navController)
             }
         }
     }
