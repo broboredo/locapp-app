@@ -27,7 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -59,83 +59,56 @@ fun Button(
     val contentAlpha by animateFloatAsState(targetValue = if (loading) 0f else 1f, label = "")
     val loadingAlpha by animateFloatAsState(targetValue = if (loading) 1f else 0f, label = "")
 
-    if (!outline) {
-        MaterialButton(
-            modifier = modifier.fillMaxWidth(),
-            onClick = onClick,
-            enabled = enabled && !loading,
-            shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = mainColor,
-                contentColor = Color.White,
-                disabledContainerColor = GrayLight,
-                disabledContentColor = Gray
-            )
-        ) {
-            Box(
-                contentAlignment = Alignment.Center,
-            ) {
-                LoadingIndicator(
-                    animating = loading,
-                    modifier = Modifier.graphicsLayer { alpha = loadingAlpha },
-                    color = mainColor
-                )
-                Box(
-                    modifier = Modifier.graphicsLayer { alpha = contentAlpha }
-                ) {
-                    Text(text = label)
-                }
-            }
-        }
+    val buttonColors = if (outline) {
+        ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            contentColor = mainColor,
+            disabledContainerColor = GrayLight,
+            disabledContentColor = Gray
+        )
     } else {
-        MaterialButton(
-            modifier = modifier
-                .border(
-                    width = 1.dp,
-                    color = mainColor,
-                    shape = RoundedCornerShape(8.dp)
-                )
-                .fillMaxWidth(),
-            onClick = onClick,
-            enabled = enabled && !loading,
-            shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = mainColor,
-                disabledContainerColor = GrayLight,
-                disabledContentColor = Gray
-            )
-        ) {
-            Text(text = label)
-        }
-    }
-}
-
-@Composable
-fun ContinueButton(
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    loading: Boolean = false,
-    onClick: () -> Unit
-) {
-    MaterialButton(
-        modifier = modifier.size(32.dp),
-        shape = CircleShape,
-        onClick = onClick,
-        enabled = enabled,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Green500,
+        ButtonDefaults.buttonColors(
+            containerColor = mainColor,
             contentColor = Color.White,
             disabledContainerColor = GrayLight,
             disabledContentColor = Gray
-        ),
-        contentPadding = PaddingValues(0.dp)
-    ) {
-        Icon(
-            imageVector = Octicons.ChevronRight24,
-            contentDescription = "Next",
-            modifier = modifier.padding(0.dp)
         )
+    }
+
+    val buttonModifier = if (outline) {
+        modifier
+            .border(
+                width = 1.dp,
+                color = mainColor,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .fillMaxWidth()
+    } else {
+        modifier.fillMaxWidth()
+    }
+
+    MaterialButton(
+        modifier = buttonModifier,
+        onClick = onClick,
+        enabled = enabled && !loading,
+        shape = RoundedCornerShape(8.dp),
+        colors = buttonColors
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+        ) {
+            if (loading) {
+                LoadingIndicator(
+                    modifier = Modifier.graphicsLayer { alpha = loadingAlpha },
+                    color = mainColor
+                )
+            } else {
+                Text(
+                    text = label,
+                    modifier = Modifier.graphicsLayer { alpha = contentAlpha }
+                )
+            }
+        }
     }
 }
 
@@ -173,12 +146,12 @@ fun CancelButton(
 
 @Composable
 private fun LoadingIndicator(
-    animating: Boolean,
+    animating: Boolean = true,
     modifier: Modifier = Modifier,
     color: Color = MainColor
 ) {
     val animatedValues = List(3) { index ->
-        var animatedValue by remember(key1 = animating) { mutableStateOf(0f) }
+        var animatedValue by remember(key1 = animating) { mutableFloatStateOf(0f) }
         LaunchedEffect(key1 = animating) {
             if (animating) {
                 animate(
