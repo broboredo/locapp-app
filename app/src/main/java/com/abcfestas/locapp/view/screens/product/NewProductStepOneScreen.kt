@@ -38,7 +38,7 @@ import com.abcfestas.locapp.data.models.Product
 import com.abcfestas.locapp.ui.theme.Typography
 import com.abcfestas.locapp.view.components.CancelButton
 import com.abcfestas.locapp.viewmodel.viewModelFactory
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
+// import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -156,7 +156,6 @@ fun EditQuantityStep(viewModel: CreateProductViewModel) {
     }
 }
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun NewProductDetailsStep(viewModel: CreateProductViewModel)
 {
