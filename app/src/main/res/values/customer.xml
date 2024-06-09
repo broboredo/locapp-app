@@ -1,0 +1,14 @@
+<resources>
+    <string name="customers">Clientes</string>
+    <string name="customer">Cliente</string>
+    <string name="new_customer">Novo Cliente</string>
+    <string name="update_customer">Atualizar Cliente</string>
+    <string name="customer_created_successfully">Cliente criado</string>
+    <string name="customer_updated_successfully">Cliente atualizado</string>
+    <string name="customer_search_placeholder">Busque pelo cliente</string>
+    <string name="customer_next_page_loading">Carregando mais clientes</string>
+    <string name="customer_last_page">Não há mais usuários</string>
+    <string name="address">Endereço</string>
+    <string name="phone">Telefone</string>
+    <string name="customer_notes_placeholder">Adicione alguma nota sobre o cliente (ex.: Mora na esquina da padaria do seu Zé)</string>
+</resources>

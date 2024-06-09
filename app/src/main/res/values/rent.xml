@@ -1,0 +1,7 @@
+<resources>
+    <string name="rent">Locação</string>
+    <string name="rentals">Locações</string>
+    <string name="new_rent">Nova Locação</string>
+    <string name="current_rentals">Locações desta semana</string>
+    <string name="upcoming_rentals">Próximas Locações</string>
+</resources>

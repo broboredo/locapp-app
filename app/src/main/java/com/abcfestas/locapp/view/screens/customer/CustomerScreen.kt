@@ -69,14 +69,14 @@ fun CustomerScreen(
         Column(modifier = Modifier.weight(1f, false)) {
             Text(text = stringResource(R.string.customers), style = Typography.titleLarge)
 
-            ListCustomers()
+            ListCustomers(navController = navController)
         }
 
         Button(
             modifier = Modifier.padding(vertical = 8.dp),
             label = stringResource(R.string.new_customer),
             onClick = {
-                navController.navigate(ScreensEnum.NewCustomerScreen.route)
+                navController.navigate(ScreensEnum.CustomerFormScreen.route)
             }
         )
     }
@@ -85,6 +85,7 @@ fun CustomerScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListCustomers(
+    navController: NavController,
     viewModel: CustomerViewModel = viewModel(factory = viewModelFactory {
         CustomerViewModel(LocAppApplication.appModule.customerRepository)
     })
@@ -150,7 +151,7 @@ fun ListCustomers(
 
     LazyColumn(state = listState) {
         items(customerList) {
-            CustomerBox(customer =  it)
+            CustomerBox(navController = navController, customer =  it)
         }
     }
 
@@ -170,16 +171,19 @@ fun ListCustomers(
 }
 
 @Composable
-fun CustomerBox(customer: Customer) {
+fun CustomerBox(
+    navController: NavController,
+    customer: Customer
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
+                navController.navigate(ScreensEnum.CustomerDetailsScreen.route.replace("{customerId}", customer.id.toString()))
                 Log.d("CustomerScreen", "Customer #${customer.id} ${customer.name} clicked")
             }
     ) {
-
         Column {
             Text(text = customer.name, style = Typography.bodyLarge)
             Text(text = customer.phone!!, style = Typography.bodyMedium)

@@ -5,7 +5,7 @@ import com.abcfestas.locapp.data.remote.IApi
 import com.abcfestas.locapp.data.remote.responses.customer.CustomerListResponse
 import com.abcfestas.locapp.data.remote.responses.customer.CustomerResponse
 import com.abcfestas.locapp.util.Resource
-import com.abcfestas.locapp.view.screens.customer.NewCustomerFormState
+import com.abcfestas.locapp.viewmodel.customer.CustomerFormState
 
 class CustomerRepository(
     private val api: IApi
@@ -36,7 +36,7 @@ class CustomerRepository(
         return Resource.Success(response)
     }
 
-    suspend fun createCustomer(customer: NewCustomerFormState): Resource<CustomerResponse> {
+    suspend fun createCustomer(customer: CustomerFormState): Resource<CustomerResponse> {
         val response = try {
             api.createCustomer(customer)
         } catch (e: Exception) {
@@ -47,9 +47,9 @@ class CustomerRepository(
         return Resource.Success(response)
     }
 
-    suspend fun updateCustomer(id: Int, customer: NewCustomerFormState): Resource<CustomerResponse> {
+    suspend fun updateCustomer(id: Int, customer: CustomerFormState): Resource<CustomerResponse> {
         val response = try {
-            api.updateCustomer(customer)
+            api.updateCustomer(id, customer)
         } catch (e: Exception) {
             Log.d("ERROR: CustomerRepository::updateCustomer", e.message.toString())
             return Resource.Error(e.message.toString()) // TODO: improvement message

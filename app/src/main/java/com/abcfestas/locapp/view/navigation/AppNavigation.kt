@@ -36,8 +36,8 @@ import com.abcfestas.locapp.ui.theme.Gray
 import com.abcfestas.locapp.ui.theme.Green500
 import com.abcfestas.locapp.view.screens.HomeScreen
 import com.abcfestas.locapp.view.screens.RentScreen
+import com.abcfestas.locapp.view.screens.customer.CustomerFormScreen
 import com.abcfestas.locapp.view.screens.customer.CustomerScreen
-import com.abcfestas.locapp.view.screens.customer.NewCustomerScreen
 import com.abcfestas.locapp.view.screens.product.NewProductStepOneScreen
 import com.abcfestas.locapp.view.screens.product.ProductDetailScreen
 import com.abcfestas.locapp.view.screens.product.ProductScreen
@@ -110,11 +110,25 @@ fun AppNavigation() {
             }
 
             // Customer Screens
-            composable(route = ScreensEnum.NewCustomerScreen.route) {
-                NewCustomerScreen(navController)
+            composable(route = ScreensEnum.CustomerFormScreen.route) {
+                CustomerFormScreen(navController)
             }
             composable(route = ScreensEnum.CustomerScreen.route) {
                 CustomerScreen(navController)
+            }
+            composable(
+                route = ScreensEnum.CustomerDetailsScreen.route,
+                arguments = listOf(
+                    navArgument("customerId") {
+                        type = NavType.IntType
+                        nullable = false
+                    }
+                )
+            ) {
+                val customerId = remember {
+                    it.arguments?.getInt("customerId") ?: 0 // TODO create try catch or not found screen
+                }
+                CustomerFormScreen(navController, customerId)
             }
 
             // Product Screens
@@ -126,14 +140,14 @@ fun AppNavigation() {
             composable(
                 route = ScreensEnum.ProductDetailsScreen.route,
                 arguments = listOf(
-                    navArgument("product_id") {
+                    navArgument("productId") {
                         type = NavType.IntType
                         nullable = false
                     }
                 )
             ) {
                 val productId = remember {
-                    it.arguments?.getInt("product_id") ?: 0 // TODO create try catch or not found screen
+                    it.arguments?.getInt("productId") ?: 0 // TODO create try catch or not found screen
                 }
                 ProductDetailScreen(navController, productId)
             }

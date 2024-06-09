@@ -1,25 +1,8 @@
 <resources>
     <string name="app_name">LocApp</string>
     <string name="home">Início</string>
-    <string name="customers">Clientes</string>
-    <string name="customer">Cliente</string>
-    <string name="new_customer">Novo Cliente</string>
-    <string name="customer_created_successfully">Cliente criado</string>
-    <string name="customer_search_placeholder">Busque pelo cliente</string>
-    <string name="customer_next_page_loading">Carregando mais clientes</string>
-    <string name="customer_last_page">Não há mais usuários</string>
-    <string name="products">Móveis</string>
-    <string name="product">Móvel</string>
-    <string name="new_product">Novo Móvel</string>
-    <string name="product_name">Nome do móvel</string>
-    <string name="rent">Locação</string>
-    <string name="rentals">Locações</string>
-    <string name="new_rent">Nova Locação</string>
-    <string name="current_rentals">Locações desta semana</string>
-    <string name="upcoming_rentals">Próximas Locações</string>
-    <string name="quantity">Quantidade</string>
-    <string name="unavailable">Indisponíveis</string>
-    <string name="available">Disponíveis</string>
+    <string name="name">Nome</string>
+    <string name="email">E-mail</string>
     <string name="cancel">Cancelar</string>
     <string name="save">Salvar</string>
     <string name="add">Adicionar</string>
@@ -29,5 +12,7 @@
     <string name="back">Voltar</string>
     <string name="something_went_wrong">Ocorreu algum erro</string>
     <string name="retry">Tentar Novamente</string>
+    <string name="created">Criado</string>
+    <string name="updated">Atualizado</string>
     <string name="no_internet_connection">Sem conexão com a internet</string>
 </resources>

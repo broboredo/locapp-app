@@ -4,7 +4,7 @@ import com.abcfestas.locapp.data.remote.responses.customer.CustomerListResponse
 import com.abcfestas.locapp.data.remote.responses.customer.CustomerResponse
 import com.abcfestas.locapp.data.remote.responses.product.ProductListResponse
 import com.abcfestas.locapp.data.remote.responses.product.ProductResponse
-import com.abcfestas.locapp.view.screens.customer.NewCustomerFormState
+import com.abcfestas.locapp.viewmodel.customer.CustomerFormState
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -26,12 +26,13 @@ interface IApi {
 
     @POST("customers")
     suspend fun createCustomer(
-        @Body customer: NewCustomerFormState
+        @Body customer: CustomerFormState
     ): CustomerResponse
 
     @PUT("customers/{id}")
     suspend fun updateCustomer(
-        @Body customer: NewCustomerFormState
+        @Path("id") id: Int,
+        @Body customer: CustomerFormState
     ): CustomerResponse
 
     @GET("products")

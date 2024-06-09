@@ -1,0 +1,9 @@
+<resources>
+    <string name="products">Móveis</string>
+    <string name="product">Móvel</string>
+    <string name="new_product">Novo Móvel</string>
+    <string name="product_name">Nome do móvel</string>
+    <string name="quantity">Quantidade</string>
+    <string name="unavailable">Indisponíveis</string>
+    <string name="available">Disponíveis</string>
+</resources>

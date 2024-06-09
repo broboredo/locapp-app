@@ -1,6 +1,7 @@
-package com.abcfestas.locapp.view.screens.customer
+package com.abcfestas.locapp.viewmodel.customer
 
-data class NewCustomerFormState(
+data class CustomerFormState(
+    val id: Int? = null,
     val name: String = "",
     val nameError: String? = null,
     val phone: String = "",

@@ -5,7 +5,8 @@ enum class ScreensEnum(val route: String) {
     RentScreen("rentals"),
     // Customer
     CustomerScreen("customers"),
-    NewCustomerScreen("customers/create"),
+    CustomerFormScreen("customers/create"),
+    CustomerDetailsScreen("customers/{customerId}"),
     // Product
     ProductScreen("products"),
     ProductDetailsScreen("products/{productId}"),

@@ -8,4 +8,5 @@ data class CustomerData(
     val Name: String,
     val Notes: String,
     val Phone: String,
+    val Email: String,
 )
