@@ -109,8 +109,4 @@ dependencies {
 
     // Viewmodel compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
-
-    // Accompanist Permissions - Camera
-    // implementation("com.google.accompanist:accompanist-permissions:0.35.1-alpha")
-    // implementation("androidx.activity:activity-compose:1.9.0")
 }
