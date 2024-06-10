@@ -271,6 +271,7 @@ fun EditQuantityStep(viewModel: CreateProductViewModel) {
 fun NewProductDetailsStep(viewModel: CreateProductViewModel)
 {
     val productState = viewModel.state
+    val context: Context = LocalContext.current
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -306,7 +307,9 @@ fun NewProductDetailsStep(viewModel: CreateProductViewModel)
                     .verticalScroll(rememberScrollState())
                     .weight(1f, false)
             ) {
-                Camera()
+                Camera(
+                    viewModel = viewModel
+                )
 
                 Column(
                     modifier = Modifier.padding(16.dp)
@@ -367,7 +370,7 @@ fun NewProductDetailsStep(viewModel: CreateProductViewModel)
         Button(
             label = stringResource(id = R.string.save),
             onClick = {
-                viewModel.onEvent(ProductFormEvent.Save)
+                viewModel.save(context)
             },
             modifier = Modifier
                 .padding(16.dp)
@@ -400,7 +403,7 @@ fun WizardFormTopNavigation(
 }
 
 @Composable
-fun Camera(currentImageUri: String? = null) {
+fun Camera(currentImageUri: String? = null, viewModel: CreateProductViewModel) {
     val context = LocalContext.current
     val file = context.createImageFile()
     val uri = FileProvider.getUriForFile(
@@ -414,6 +417,7 @@ fun Camera(currentImageUri: String? = null) {
     val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
             imageUrl = uri
+            viewModel.imageUri.value = uri
         }
     }
 

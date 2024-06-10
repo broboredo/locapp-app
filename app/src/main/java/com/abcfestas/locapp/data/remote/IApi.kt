@@ -6,10 +6,13 @@ import com.abcfestas.locapp.data.remote.responses.product.ProductListResponse
 import com.abcfestas.locapp.data.remote.responses.product.ProductResponse
 import com.abcfestas.locapp.viewmodel.customer.CustomerFormState
 import com.abcfestas.locapp.viewmodel.product.ProductFormState
+import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -46,6 +49,12 @@ interface IApi {
     @GET("products/{id}")
     suspend fun getProductById(@Path("id") id: Int): ProductResponse
 
+    @Multipart
+    @PUT("products/{id}/image")
+    suspend fun syncProductImage(
+        @Path("id") id: Int,
+        @Part image: MultipartBody.Part
+    ): ProductResponse
     @POST("products")
     suspend fun createProduct(
         @Body product: ProductFormState

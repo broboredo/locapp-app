@@ -1,6 +1,9 @@
 package com.abcfestas.locapp.viewmodel.product
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -25,6 +28,8 @@ class CreateProductViewModel(
 
     var state by mutableStateOf(ProductFormState())
     var productList = mutableStateOf<List<Product>>(listOf())
+
+    var imageUri: MutableState<Uri?> = mutableStateOf(null)
 
     private val validateRequired: ValidateRequired = ValidateRequired()
     private val validatePrice: ValidatePrice = ValidatePrice()
@@ -114,7 +119,7 @@ class CreateProductViewModel(
                 state = state.copy(description =  event.description)
             }
             is ProductFormEvent.Save -> {
-                save()
+                // TODO(save())
             }
             is ProductFormEvent.Update -> {
                 update()
@@ -136,19 +141,27 @@ class CreateProductViewModel(
         return !hasError
     }
 
-    fun save()
+    fun save(context: Context)
     {
         if (!validateForm()) return
 
         viewModelScope.launch {
             loadingFormButton.value = true
-            when (val result = repository.createProduct(state)) {
+            val result = repository.createProduct(state)
+            if (imageUri.value != null) {
+                val resultImage = repository.syncImage(
+                    context,
+                    result.data!!.data.ID,
+                    imageUri.value!!
+                )
+            }
+
+            when (result) {
                 is Resource.Success -> {
                     validationEventChannel.send(ValidationEvent.Success)
                 }
                 is Resource.Error -> {
                     Log.d("ERROR: CreateProductViewModel::save", "Failed to submit form: ${result.message}")
-                    TODO()
                 }
             }
             loadingFormButton.value = false
@@ -187,7 +200,7 @@ class CreateProductViewModel(
             val result = state.id?.let { repository.updateProduct(it, state) }
             when (result) {
                 is Resource.Success -> {
-                    validationEventChannel.send(CreateProductViewModel.ValidationEvent.Success)
+                    validationEventChannel.send(ValidationEvent.Success)
                 }
                 is Resource.Error -> {
                     Log.d("ERROR: CreateProductViewModel::updateForm", "Failed to update form: ${result.message}")
