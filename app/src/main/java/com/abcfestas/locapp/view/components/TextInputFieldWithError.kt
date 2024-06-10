@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -34,7 +35,8 @@ fun TextInputFieldWithError(
     singleLine: Boolean = true,
     minLines: Int = 1,
     modifier: Modifier = Modifier,
-    label: @Composable (() -> Unit)? = null
+    label: @Composable (() -> Unit)? = null,
+    onKeyboardEnter: (() -> Unit)? = null,
 ) {
     Column(modifier = modifier) {
         OutlinedTextField(
@@ -42,6 +44,11 @@ fun TextInputFieldWithError(
             onValueChange = onValueChange,
             isError = isError,
             keyboardOptions = keyboardOptions,
+            keyboardActions = KeyboardActions(onDone  = {
+                if (onKeyboardEnter != null) {
+                    onKeyboardEnter()
+                }
+            }),
             placeholder = { Text(text = placeholder) },
             singleLine = singleLine,
             minLines = minLines,
@@ -54,7 +61,7 @@ fun TextInputFieldWithError(
             },
             colors = OutlinedTextFieldDefaults.colors(
                 cursorColor = MainColor
-            ),
+            )
         )
         if (isError && errorMessage != null) {
             Text(text = errorMessage, color = Red)
@@ -72,13 +79,19 @@ fun TextInputField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     singleLine: Boolean = true,
     minLines: Int = 1,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onKeyboardEnter: (() -> Unit)? = null,
 ) {
     Column(modifier = modifier) {
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             keyboardOptions = keyboardOptions,
+            keyboardActions = KeyboardActions(onDone  = {
+                if (onKeyboardEnter != null) {
+                    onKeyboardEnter()
+                }
+            }),
             placeholder = { Text(text = placeholder) },
             singleLine = singleLine,
             minLines = minLines,

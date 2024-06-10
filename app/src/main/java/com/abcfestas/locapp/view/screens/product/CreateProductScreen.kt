@@ -147,7 +147,10 @@ fun ProductNameStep(viewModel: CreateProductViewModel, navController: NavControl
                     query = it
                     viewModel.productName = it
                 },
-                placeholder = "Nome do Produto"
+                placeholder = "Nome do Produto",
+                onKeyboardEnter = {
+                    viewModel.nextStep()
+                }
             )
 
             if (query.isNotEmpty()) {
@@ -163,13 +166,18 @@ fun ProductNameStep(viewModel: CreateProductViewModel, navController: NavControl
         }
 
         com.abcfestas.locapp.view.components.Button(
-            label = stringResource(id = R.string.next),
+            label = if (viewModel.productName.isNotEmpty()) {
+                stringResource(id = R.string.next)
+            } else {
+                stringResource(id = R.string.enter_product_name)
+           },
             onClick = {
                 viewModel.nextStep()
             },
             modifier = Modifier
                 .padding(16.dp)
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomCenter),
+            enabled = viewModel.productName.isNotEmpty()
         )
     }
 }

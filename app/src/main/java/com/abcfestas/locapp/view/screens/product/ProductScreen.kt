@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -33,10 +32,10 @@ import com.abcfestas.locapp.LocAppApplication
 import com.abcfestas.locapp.R
 import com.abcfestas.locapp.data.models.Product
 import com.abcfestas.locapp.ui.theme.Green500
-import com.abcfestas.locapp.ui.theme.Red
 import com.abcfestas.locapp.ui.theme.Typography
 import com.abcfestas.locapp.view.components.Button
 import com.abcfestas.locapp.view.components.CircleImage
+import com.abcfestas.locapp.view.components.LostConnection
 import com.abcfestas.locapp.view.navigation.ScreensEnum
 import com.abcfestas.locapp.viewmodel.product.ProductViewModel
 import com.abcfestas.locapp.viewmodel.viewModelFactory
@@ -101,7 +100,7 @@ fun ListProducts(
                     color = Green500
                 )
             } else if (error.isNotEmpty()) {
-                Text(text = error, color = Red, fontSize = 16.sp)
+                LostConnection(message = error) { viewModel.loadProducts() }
             }
         }
     }

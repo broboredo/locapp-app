@@ -41,6 +41,7 @@ class CreateProductViewModel(
     }
 
     private fun reset() {
+        productName = ""
         selectedProduct = null
     }
 
