@@ -10,7 +10,7 @@ enum class ScreensEnum(val route: String) {
     // Product
     ProductScreen("products"),
     ProductDetailsScreen("products/{productId}"),
-    NewProductStepOneScreen("products/create/step_one"),
+    CreateProductScreen("products/create"),
 
     // Errors
     SomethingWentWrongScreen("error");

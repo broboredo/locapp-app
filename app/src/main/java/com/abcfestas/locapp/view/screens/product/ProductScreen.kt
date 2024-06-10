@@ -63,7 +63,7 @@ fun ProductScreen(
             modifier = Modifier.padding(vertical = 8.dp),
             label = stringResource(R.string.new_product),
             onClick = {
-                navController.navigate(ScreensEnum.NewProductStepOneScreen.route)
+                navController.navigate(ScreensEnum.CreateProductScreen.route)
             }
         )
     }
