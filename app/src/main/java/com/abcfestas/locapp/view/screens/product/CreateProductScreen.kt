@@ -58,6 +58,7 @@ import com.abcfestas.locapp.data.models.Product
 import com.abcfestas.locapp.ui.theme.Gray
 import com.abcfestas.locapp.ui.theme.GrayLight
 import com.abcfestas.locapp.ui.theme.Typography
+import com.abcfestas.locapp.view.components.Button
 import com.abcfestas.locapp.view.components.CancelButton
 import com.abcfestas.locapp.view.components.TextInputField
 import com.abcfestas.locapp.view.components.TextInputFieldWithError
@@ -165,7 +166,7 @@ fun ProductNameStep(viewModel: CreateProductViewModel, navController: NavControl
             }
         }
 
-        com.abcfestas.locapp.view.components.Button(
+        Button(
             label = if (viewModel.productName.isNotEmpty()) {
                 stringResource(id = R.string.next)
             } else {
@@ -226,7 +227,7 @@ fun EditQuantityStep(viewModel: CreateProductViewModel) {
 
         }
 
-        com.abcfestas.locapp.view.components.Button(
+        Button(
             label = stringResource(id = R.string.update),
             onClick = {
                 viewModel.updateProduct()
@@ -320,7 +321,7 @@ fun NewProductDetailsStep(viewModel: CreateProductViewModel)
 
         }
 
-        com.abcfestas.locapp.view.components.Button(
+        Button(
             label = stringResource(id = R.string.save),
             onClick = {
                 viewModel.save()
