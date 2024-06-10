@@ -1,9 +1,9 @@
 package com.abcfestas.locapp.view.screens.product
 
-import CreateProductViewModel
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,16 +31,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -54,7 +57,6 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.abcfestas.locapp.LocAppApplication
 import com.abcfestas.locapp.R
-import com.abcfestas.locapp.data.models.Product
 import com.abcfestas.locapp.ui.theme.Gray
 import com.abcfestas.locapp.ui.theme.GrayLight
 import com.abcfestas.locapp.ui.theme.Typography
@@ -62,6 +64,8 @@ import com.abcfestas.locapp.view.components.Button
 import com.abcfestas.locapp.view.components.CancelButton
 import com.abcfestas.locapp.view.components.TextInputField
 import com.abcfestas.locapp.view.components.TextInputFieldWithError
+import com.abcfestas.locapp.viewmodel.product.CreateProductViewModel
+import com.abcfestas.locapp.viewmodel.product.ProductFormEvent
 import com.abcfestas.locapp.viewmodel.viewModelFactory
 import compose.icons.Octicons
 import compose.icons.octicons.Image24
@@ -79,6 +83,25 @@ fun CreateProductScreen(
     })
 ) {
     val step = viewModel.step
+    val context = LocalContext.current
+    val successMessage = stringResource(
+        id = if (step == 1) {
+            R.string.product_created_successfully
+        } else {
+            R.string.product_quantity_updated_successfully
+        }
+    )
+
+    LaunchedEffect(Unit) {
+        viewModel.validationEvents.collect { event ->
+            when(event) {
+                is CreateProductViewModel.ValidationEvent.Success -> {
+                    Toast.makeText(context, successMessage, Toast.LENGTH_LONG).show()
+                    navController.popBackStack()
+                }
+            }
+        }
+    }
 
     AnimatedContent(
         targetState = step,
@@ -92,7 +115,16 @@ fun CreateProductScreen(
             1 -> ProductNameStep(viewModel, navController)
             2 -> {
                 if (viewModel.selectedProduct != null) {
-                    EditQuantityStep(viewModel)
+                    if (viewModel.loadingScreen.value) {
+                        Box(
+                            modifier = Modifier.fillMaxSize().background(color = Color.White),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    } else {
+                        EditQuantityStep(viewModel)
+                    }
                 } else {
                     NewProductDetailsStep(viewModel)
                 }
@@ -102,24 +134,16 @@ fun CreateProductScreen(
 }
 
 @Composable
-fun ProductNameStep(viewModel: CreateProductViewModel, navController: NavController) {
+fun ProductNameStep(
+    viewModel: CreateProductViewModel,
+    navController: NavController
+) {
+    LaunchedEffect(Unit) {
+        viewModel.loadProducts()
+    }
+
     var query by remember { mutableStateOf("") }
-    val products = listOf(
-        Product(
-            1,
-            "Nome do produto 1",
-            "descricao do produto 1",
-            10.50,
-            1
-        ),
-        Product(
-            2,
-            "Nome do produto 2",
-            "descricao do produto 2",
-            150.00,
-            2
-        )
-    )
+    val products by remember { viewModel.productList }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -146,9 +170,10 @@ fun ProductNameStep(viewModel: CreateProductViewModel, navController: NavControl
                 value = query,
                 onValueChange = {
                     query = it
-                    viewModel.productName = it
+                    viewModel.productNameOnInput.value = it
+                    viewModel.onEvent(ProductFormEvent.NameChanged(it))
                 },
-                placeholder = "Nome do Produto",
+                placeholder = "Nome do móvel",
                 onKeyboardEnter = {
                     viewModel.nextStep()
                 }
@@ -167,7 +192,7 @@ fun ProductNameStep(viewModel: CreateProductViewModel, navController: NavControl
         }
 
         Button(
-            label = if (viewModel.productName.isNotEmpty()) {
+            label = if (viewModel.productNameOnInput.value.isNotEmpty()) {
                 stringResource(id = R.string.next)
             } else {
                 stringResource(id = R.string.enter_product_name)
@@ -178,13 +203,16 @@ fun ProductNameStep(viewModel: CreateProductViewModel, navController: NavControl
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.BottomCenter),
-            enabled = viewModel.productName.isNotEmpty()
+            enabled = viewModel.productNameOnInput.value.isNotEmpty(),
+            loading = viewModel.loadingFormButton.value
         )
     }
 }
 
 @Composable
 fun EditQuantityStep(viewModel: CreateProductViewModel) {
+    val productState = viewModel.state
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -207,22 +235,22 @@ fun EditQuantityStep(viewModel: CreateProductViewModel) {
                         }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "Quantidade do produto", style = Typography.titleLarge)
+                    Text(text = "Quantidade deste móvel", style = Typography.titleLarge)
                 }
             }
             Text(
-                text = "Este produto já está registrado. Atualize a quantidade atual para refletir o estoque correto.",
+                text = "Este móvel já está registrado. Atualize a quantidade atual para refletir o estoque correto.",
                 style = Typography.bodyMedium
             )
             Spacer(modifier = Modifier.height(16.dp))
 
             TextInputFieldWithError(
-                value = viewModel.quantity.toString(),
-                onValueChange = { viewModel.quantity = it.toInt() },
+                value = productState.quantity.toString(),
+                onValueChange = { viewModel.onEvent(ProductFormEvent.QuantityChanged(it.toInt())) },
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 placeholder = "Quantidade",
-                isError = viewModel.quantityError != null,
-                errorMessage = viewModel.quantityError,
+                isError = productState.quantityError != null,
+                errorMessage = productState.quantityError,
             )
 
         }
@@ -230,11 +258,12 @@ fun EditQuantityStep(viewModel: CreateProductViewModel) {
         Button(
             label = stringResource(id = R.string.update),
             onClick = {
-                viewModel.updateProduct()
+                viewModel.onEvent(ProductFormEvent.Update)
             },
             modifier = Modifier
                 .padding(16.dp)
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomCenter),
+            loading = viewModel.loadingFormButton.value
         )
     }
 }
@@ -242,6 +271,8 @@ fun EditQuantityStep(viewModel: CreateProductViewModel) {
 @Composable
 fun NewProductDetailsStep(viewModel: CreateProductViewModel)
 {
+    val productState = viewModel.state
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -263,7 +294,7 @@ fun NewProductDetailsStep(viewModel: CreateProductViewModel)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Cadastro do ${viewModel.productName}",
+                    text = "Cadastro: ${viewModel.productNameOnInput.value}",
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = Typography.titleLarge,
@@ -282,34 +313,47 @@ fun NewProductDetailsStep(viewModel: CreateProductViewModel)
                     modifier = Modifier.padding(16.dp)
                 ) {
                     TextInputFieldWithError(
-                        value = viewModel.quantity.toString(),
-                        onValueChange = { viewModel.quantity = it.toInt() },
+                        value = productState.quantity.toString(),
+                        onValueChange = {
+                            if (it.isEmpty()) {
+                                viewModel.onEvent(ProductFormEvent.QuantityChanged(0))
+                            } else {
+                                viewModel.onEvent(ProductFormEvent.QuantityChanged(it.toInt()))
+                            }
+                        },
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                        placeholder = "Adicione a quantidade que possui deste mesmo produto",
-                        isError = viewModel.quantityError != null,
-                        errorMessage = viewModel.quantityError,
+                        placeholder = "Adicione a quantidade que possui deste mesmo móvel",
+                        isError = productState.quantityError != null,
+                        errorMessage = productState.quantityError,
                         label = {
                             Text(text = "Quantidade")
                         }
                     )
 
                     TextInputFieldWithError(
-                        value = viewModel.price,
-                        onValueChange = { viewModel.price = it },
-                        placeholder = "Qual valor de locação deste produto (por unidade)?",
-                        isError = viewModel.priceError != null,
-                        errorMessage = viewModel.priceError,
+                        value = productState.price.toString(),
+                        onValueChange = {
+                            if (it.isEmpty()) {
+                                viewModel.onEvent(ProductFormEvent.PriceChanged(0.00))
+                            } else {
+                                viewModel.onEvent(ProductFormEvent.PriceChanged(it.toDouble()))
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                        placeholder = "Qual valor de locação deste móvel (por unidade)?",
+                        isError = productState.priceError != null,
+                        errorMessage = productState.priceError,
                         label = {
                             Text(text = "Preço")
                         }
                     )
 
                     TextInputFieldWithError(
-                        value = viewModel.description,
-                        onValueChange = { viewModel.description = it },
+                        value = productState.description,
+                        onValueChange = { viewModel.onEvent(ProductFormEvent.DescriptionChanged(it)) },
                         placeholder = "Se tem alguma nota sobre este tipo de móvel, deixe anotado aqui...",
-                        isError = viewModel.descriptionError != null,
-                        errorMessage = viewModel.descriptionError,
+                        isError = productState.descriptionError != null,
+                        errorMessage = productState.descriptionError,
                         singleLine = false,
                         minLines = 5,
                         label = {
@@ -324,11 +368,12 @@ fun NewProductDetailsStep(viewModel: CreateProductViewModel)
         Button(
             label = stringResource(id = R.string.save),
             onClick = {
-                viewModel.save()
+                viewModel.onEvent(ProductFormEvent.Save)
             },
             modifier = Modifier
                 .padding(16.dp)
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomCenter),
+            loading = viewModel.loadingFormButton.value
         )
     }
 }

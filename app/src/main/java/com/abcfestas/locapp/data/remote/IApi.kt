@@ -5,6 +5,7 @@ import com.abcfestas.locapp.data.remote.responses.customer.CustomerResponse
 import com.abcfestas.locapp.data.remote.responses.product.ProductListResponse
 import com.abcfestas.locapp.data.remote.responses.product.ProductResponse
 import com.abcfestas.locapp.viewmodel.customer.CustomerFormState
+import com.abcfestas.locapp.viewmodel.product.ProductFormState
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -44,4 +45,15 @@ interface IApi {
 
     @GET("products/{id}")
     suspend fun getProductById(@Path("id") id: Int): ProductResponse
+
+    @POST("products")
+    suspend fun createProduct(
+        @Body product: ProductFormState
+    ): ProductResponse
+
+    @PUT("products/{id}")
+    suspend fun updateProduct(
+        @Path("id") id: Int,
+        @Body product: ProductFormState
+    ): ProductResponse
 }

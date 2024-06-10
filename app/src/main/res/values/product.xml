@@ -6,5 +6,8 @@
     <string name="quantity">Quantidade</string>
     <string name="unavailable">Indisponíveis</string>
     <string name="available">Disponíveis</string>
-    <string name="enter_product_name">Digite o nome do produto</string>
+    <string name="enter_product_name">Digite o nome do móvel</string>
+    <string name="product_created_successfully">Móvel criado</string>
+    <string name="product_updated_successfully">Produto atualizado</string>
+    <string name="product_quantity_updated_successfully">Quantitade atualizada</string>
 </resources>

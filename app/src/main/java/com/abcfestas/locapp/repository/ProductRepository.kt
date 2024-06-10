@@ -5,6 +5,7 @@ import com.abcfestas.locapp.data.remote.IApi
 import com.abcfestas.locapp.data.remote.responses.product.ProductListResponse
 import com.abcfestas.locapp.data.remote.responses.product.ProductResponse
 import com.abcfestas.locapp.util.Resource
+import com.abcfestas.locapp.viewmodel.product.ProductFormState
 
 class ProductRepository(
     private val api: IApi
@@ -29,6 +30,28 @@ class ProductRepository(
             api.getProductById(id)
         } catch (e: Exception) {
             Log.d("ERROR: ProductRepository::getProductById", e.message.toString())
+            return Resource.Error(e.message.toString()) // TODO: improvement message
+        }
+
+        return Resource.Success(response)
+    }
+
+    suspend fun createProduct(product: ProductFormState): Resource<ProductResponse> {
+        val response = try {
+            api.createProduct(product)
+        } catch (e: Exception) {
+            Log.d("ERROR: ProductRepository::createProduct", e.message.toString())
+            return Resource.Error(e.message.toString()) // TODO: improvement message
+        }
+
+        return Resource.Success(response)
+    }
+
+    suspend fun updateProduct(id: Int, product: ProductFormState): Resource<ProductResponse> {
+        val response = try {
+            api.updateProduct(id, product)
+        } catch (e: Exception) {
+            Log.d("ERROR: ProductRepository::updateProduct", e.message.toString())
             return Resource.Error(e.message.toString()) // TODO: improvement message
         }
 
