@@ -59,7 +59,6 @@ import kotlinx.coroutines.launch
 fun CustomerScreen(
     navController: NavController
 ) {
-    // TODO use LayoutDefault - remove modifier.scroll from layoutdefault
     Column(
         modifier = Modifier
             .fillMaxHeight()

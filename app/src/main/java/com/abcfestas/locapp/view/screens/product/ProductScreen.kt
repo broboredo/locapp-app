@@ -62,7 +62,6 @@ import kotlinx.coroutines.launch
 fun ProductScreen(
     navController: NavController
 ) {
-    // TODO use LayoutDefault - remove modifier.scroll from layoutdefault
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -80,7 +79,7 @@ fun ProductScreen(
             modifier = Modifier.padding(vertical = 8.dp),
             label = stringResource(R.string.new_product),
             onClick = {
-                navController.navigate(ScreensEnum.CreateProductScreen.route)
+                navController.navigate(ScreensEnum.ProductFormScreen.route)
             }
         )
     }

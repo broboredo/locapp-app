@@ -10,12 +10,8 @@ enum class ScreensEnum(val route: String) {
     // Product
     ProductScreen("products"),
     ProductDetailsScreen("products/{productId}"),
-    CreateProductScreen("products/create"),
+    ProductFormScreen("products/create"),
 
     // Errors
     SomethingWentWrongScreen("error");
-
-    companion object {
-        fun ProductDetails(productId: Int) = "products/$productId"
-    }
 }

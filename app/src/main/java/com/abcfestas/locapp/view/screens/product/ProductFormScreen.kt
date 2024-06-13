@@ -76,7 +76,7 @@ import java.util.Locale
 
 
 @Composable
-fun CreateProductScreen(
+fun ProductFormScreen(
     navController: NavController,
     productId: Int? = null,
     viewModel: ProductFormViewModel = viewModel(factory = viewModelFactory {
