@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.abcfestas.locapp.R
 import com.abcfestas.locapp.data.models.Product
 import com.abcfestas.locapp.domain.use_case.form_validation.ValidatePrice
 import com.abcfestas.locapp.domain.use_case.form_validation.ValidateRequired
@@ -173,6 +174,7 @@ class ProductFormViewModel(
         viewModelScope.launch {
             loadingScreen.value = true
             when (val result = (productId ?: selectedProduct?.let { it.id }?.let { it })?.let {
+                Log.d("LOG: get product id", "id: $it")
                 repository.getProductById(
                     it
                 )
@@ -185,7 +187,7 @@ class ProductFormViewModel(
                         quantity = product.Quantity,
                         description =  product.Description,
                         price = product.Price,
-                        imagePath = "${Constants.API_URL}${product.ImagePath}"
+                        imagePath = "${Constants.BASE_URL}${product.ImagePath}"
                     )
                 }
                 is Resource.Error -> {
@@ -200,6 +202,7 @@ class ProductFormViewModel(
 
     fun update(context: Context)
     {
+        Log.d("LOG: update", "id: ${state.id}")
         viewModelScope.launch {
             loadingFormButton.value = true
             val result = state.id?.let { repository.updateProduct(it, state) }
@@ -227,6 +230,17 @@ class ProductFormViewModel(
                 }
             }
             loadingFormButton.value = false
+        }
+    }
+
+    fun getSuccessMessage(context: Context): String
+    {
+        return if (isUpdateForm) {
+            context.getString(R.string.product_updated_successfully)
+        } else if (step == 2 && selectedProduct != null) {
+            context.getString(R.string.product_quantity_updated_successfully)
+        } else {
+            context.getString(R.string.product_created_successfully)
         }
     }
 

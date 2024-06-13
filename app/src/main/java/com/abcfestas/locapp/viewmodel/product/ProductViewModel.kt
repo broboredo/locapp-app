@@ -42,7 +42,7 @@ class ProductViewModel (
                             description = product.Description,
                             price = product.Price,
                             quantity = product.Quantity,
-                            imagePath = "${Constants.API_URL}${product.ImagePath}"
+                            imagePath = "${Constants.BASE_URL}${product.ImagePath}"
                         )
                     }
 

@@ -6,10 +6,6 @@ import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,7 +26,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -42,7 +37,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -60,6 +54,7 @@ import com.abcfestas.locapp.R
 import com.abcfestas.locapp.ui.theme.Gray
 import com.abcfestas.locapp.ui.theme.GrayLight
 import com.abcfestas.locapp.ui.theme.Typography
+import com.abcfestas.locapp.util.Constants
 import com.abcfestas.locapp.view.components.Button
 import com.abcfestas.locapp.view.components.CancelButton
 import com.abcfestas.locapp.view.components.TextInputField
@@ -74,6 +69,13 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+fun Context.createImageFile(): File {
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+    val imageFileName = "JPEG_${timeStamp}_"
+    return File.createTempFile(
+        imageFileName, ".jpg", externalCacheDir
+    )
+}
 
 @Composable
 fun ProductFormScreen(
@@ -83,66 +85,37 @@ fun ProductFormScreen(
         ProductFormViewModel(LocAppApplication.appModule.productRepository)
     })
 ) {
-    val step = viewModel.step
     val context = LocalContext.current
-    val successMessage = stringResource(
-        id = if (productId != null) {
-            R.string.product_updated_successfully
-        } else if (step == 1) {
-            R.string.product_created_successfully
-        } else {
-            R.string.product_quantity_updated_successfully
-        }
-    )
 
     LaunchedEffect(Unit) {
-        if (productId != null) {
-            viewModel.fetchProduct(productId)
-        }
+        productId?.let { viewModel.fetchProduct(it) }
 
         viewModel.validationEvents.collect { event ->
             when(event) {
                 is ProductFormViewModel.ValidationEvent.Success -> {
-                    Toast.makeText(context, successMessage, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, viewModel.getSuccessMessage(context), Toast.LENGTH_LONG).show()
                     navController.popBackStack()
                 }
             }
         }
     }
 
-    if (productId == null) {
-        AnimatedContent(
-            targetState = step,
-            transitionSpec = {
-                slideInHorizontally { fullWidth -> fullWidth
-                } togetherWith slideOutHorizontally { fullWidth -> -fullWidth
-                }
-            }, label = ""
-        ) { targetStep ->
-            when (targetStep) {
-                1 -> ProductNameStep(viewModel, navController)
-                2 -> {
-                    if (viewModel.selectedProduct != null) {
-                        if (viewModel.loadingScreen.value) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(color = Color.White),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
-                            }
-                        } else {
-                            EditQuantityStep(viewModel)
-                        }
-                    } else {
-                        NewProductDetailsStep(viewModel, navController)
-                    }
-                }
-            }
-        }
-    } else {
-        NewProductDetailsStep(viewModel, navController)
+    ContentBasedOnStep(navController, productId, viewModel)
+}
+
+@Composable
+private fun ContentBasedOnStep(
+    navController: NavController,
+    productId: Int?,
+    viewModel: ProductFormViewModel
+) {
+    val step = viewModel.step
+
+    when {
+        productId != null -> ProductForm(viewModel, navController)
+        viewModel.selectedProduct != null && step == 2 -> EditQuantityStep(viewModel)
+        step == 1 -> ProductNameStep(viewModel, navController)
+        else -> ProductForm(viewModel, navController)
     }
 }
 
@@ -225,6 +198,7 @@ fun ProductNameStep(
 @Composable
 fun EditQuantityStep(viewModel: ProductFormViewModel) {
     val productState = viewModel.state
+    val context: Context = LocalContext.current
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -259,7 +233,13 @@ fun EditQuantityStep(viewModel: ProductFormViewModel) {
 
             TextInputFieldWithError(
                 value = productState.quantity.toString(),
-                onValueChange = { viewModel.onEvent(ProductFormEvent.QuantityChanged(it.toInt())) },
+                onValueChange = {
+                    if (it.isEmpty()) {
+                        viewModel.onEvent(ProductFormEvent.QuantityChanged(0))
+                    } else {
+                        viewModel.onEvent(ProductFormEvent.QuantityChanged(it.toInt()))
+                    }
+                },
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 placeholder = "Quantidade",
                 isError = productState.quantityError != null,
@@ -271,7 +251,7 @@ fun EditQuantityStep(viewModel: ProductFormViewModel) {
         Button(
             label = stringResource(id = R.string.update),
             onClick = {
-                viewModel.onEvent(ProductFormEvent.Update)
+                viewModel.update(context)
             },
             modifier = Modifier
                 .padding(16.dp)
@@ -282,7 +262,7 @@ fun EditQuantityStep(viewModel: ProductFormViewModel) {
 }
 
 @Composable
-fun NewProductDetailsStep(viewModel: ProductFormViewModel, navController: NavController)
+fun ProductForm(viewModel: ProductFormViewModel, navController: NavController)
 {
     val productState = viewModel.state
     val context: Context = LocalContext.current
@@ -495,7 +475,7 @@ fun Camera(viewModel: ProductFormViewModel) {
                 .background(Gray),
             contentAlignment = Alignment.Center
         ) {
-            if (imageUrl == null && viewModel.state.imagePath != null) {
+            if (imageUrl == null && viewModel.state.imagePath != Constants.BASE_URL) {
                 AsyncImage(
                     model = viewModel.state.imagePath,
                     contentDescription = "Toque para adicionar uma foto",
@@ -527,12 +507,4 @@ fun Camera(viewModel: ProductFormViewModel) {
             }
         }
     }
-}
-
-fun Context.createImageFile(): File {
-    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-    val imageFileName = "JPEG_${timeStamp}_"
-    return File.createTempFile(
-        imageFileName, ".jpg", externalCacheDir
-    )
 }

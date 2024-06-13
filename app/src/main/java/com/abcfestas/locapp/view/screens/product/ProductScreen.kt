@@ -139,7 +139,7 @@ fun ListProducts(
                 },
                 expanded = expanded,
                 onExpandedChange = { expanded = it },
-                placeholder = { Text(stringResource(id = R.string.customer_search_placeholder)) },
+                placeholder = { Text(stringResource(id = R.string.product_search_placeholder)) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
             )
         },
