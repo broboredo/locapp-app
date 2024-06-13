@@ -10,4 +10,5 @@
     <string name="product_created_successfully">Móvel criado</string>
     <string name="product_updated_successfully">Produto atualizado</string>
     <string name="product_quantity_updated_successfully">Quantitade atualizada</string>
+    <string name="product_search_placeholder">Busque pelo móvel</string>
 </resources>

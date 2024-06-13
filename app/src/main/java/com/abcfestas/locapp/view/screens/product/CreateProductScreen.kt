@@ -87,7 +87,7 @@ fun CreateProductScreen(
     val context = LocalContext.current
     val successMessage = stringResource(
         id = if (productId != null) {
-            R.string.product_quantity_updated_successfully
+            R.string.product_updated_successfully
         } else if (step == 1) {
             R.string.product_created_successfully
         } else {
