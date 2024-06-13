@@ -16,4 +16,6 @@
     <string name="updated">Atualizado</string>
     <string name="no_internet_connection">Sem conexão com a internet</string>
     <string name="fileprovider">com.abcfestas.locapp.fileprovider</string>
+    <string name="no_image">Sem imagem cadastrada</string>
+    <string name="add_image">Toque para adicionar uma foto</string>
 </resources>

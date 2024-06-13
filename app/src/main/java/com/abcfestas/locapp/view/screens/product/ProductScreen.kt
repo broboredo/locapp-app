@@ -1,6 +1,5 @@
 package com.abcfestas.locapp.view.screens.product
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -110,7 +109,6 @@ fun ListProducts(
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo }
             .collect { visibleItems ->
-                Log.d("LOG: listState", "hasNextPage: $hasNextPage")
                 if (
                     hasNextPage &&
                     visibleItems.isNotEmpty() &&

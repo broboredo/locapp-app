@@ -142,11 +142,11 @@ fun ProductNameStep(
         ) {
 
             WizardFormTopNavigation(
-                title = "Insira o nome do móvel",
+                title = stringResource(id = R.string.product_flow_step_one_title),
                 navController = navController
             )
             Text(
-                text = "Caso este móvel já exista, basta digitar o nome do móvel, selecionar ele na lista e, em seguida, acrescentar ou retirar a quantidade de itens existentes",
+                text = stringResource(id = R.string.product_flow_step_one_subtitle),
                 style = Typography.bodyMedium
             )
 
@@ -159,7 +159,7 @@ fun ProductNameStep(
                     viewModel.productNameOnInput.value = it
                     viewModel.onEvent(ProductFormEvent.NameChanged(it))
                 },
-                placeholder = "Nome do móvel",
+                placeholder = stringResource(id = R.string.product_name),
                 onKeyboardEnter = {
                     viewModel.nextStep()
                 }
@@ -222,11 +222,11 @@ fun EditQuantityStep(viewModel: ProductFormViewModel) {
                         }
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "Quantidade deste móvel", style = Typography.titleLarge)
+                    Text(text = stringResource(id = R.string.product_quantity), style = Typography.titleLarge)
                 }
             }
             Text(
-                text = "Este móvel já está registrado. Atualize a quantidade atual para refletir o estoque correto.",
+                text = stringResource(id = R.string.product_flow_step_two_update_quantity),
                 style = Typography.bodyMedium
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -241,7 +241,7 @@ fun EditQuantityStep(viewModel: ProductFormViewModel) {
                     }
                 },
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                placeholder = "Quantidade",
+                placeholder = stringResource(id = R.string.quantity),
                 isError = productState.quantityError != null,
                 errorMessage = productState.quantityError,
             )
@@ -292,11 +292,11 @@ fun ProductForm(viewModel: ProductFormViewModel, navController: NavController)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = if (viewModel.isUpdateForm) {
-                        "Atualizar móvel"
+                    text = stringResource(id = if (viewModel.isUpdateForm) {
+                         R.string.update_product
                     } else {
-                        "Cadastro: ${viewModel.productNameOnInput.value}"
-                    },
+                        R.string.product_register_title
+                    }, viewModel.productNameOnInput.value),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = Typography.titleLarge,
@@ -322,11 +322,11 @@ fun ProductForm(viewModel: ProductFormViewModel, navController: NavController)
                             onValueChange = {
                                 viewModel.onEvent(ProductFormEvent.NameChanged(it))
                             },
-                            placeholder = "Adicione o nome do móvel",
+                            placeholder = stringResource(id = R.string.product_name_hint),
                             isError = productState.nameError != null,
                             errorMessage = productState.nameError,
                             label = {
-                                Text(text = "Móvel")
+                                Text(text = stringResource(id = R.string.product))
                             }
                         )
                     }
@@ -341,11 +341,11 @@ fun ProductForm(viewModel: ProductFormViewModel, navController: NavController)
                             }
                         },
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                        placeholder = "Adicione a quantidade que possui deste mesmo móvel",
+                        placeholder = stringResource(id = R.string.product_quantity_hint),
                         isError = productState.quantityError != null,
                         errorMessage = productState.quantityError,
                         label = {
-                            Text(text = "Quantidade")
+                            Text(text = stringResource(id = R.string.quantity))
                         }
                     )
 
@@ -359,24 +359,24 @@ fun ProductForm(viewModel: ProductFormViewModel, navController: NavController)
                             }
                         },
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                        placeholder = "Qual valor de locação deste móvel (por unidade)?",
+                        placeholder = stringResource(id = R.string.product_price_hint),
                         isError = productState.priceError != null,
                         errorMessage = productState.priceError,
                         label = {
-                            Text(text = "Preço")
+                            Text(text = stringResource(id = R.string.price))
                         }
                     )
 
                     TextInputFieldWithError(
                         value = productState.description,
                         onValueChange = { viewModel.onEvent(ProductFormEvent.DescriptionChanged(it)) },
-                        placeholder = "Se tem alguma nota sobre este tipo de móvel, deixe anotado aqui...",
+                        placeholder = stringResource(id = R.string.product_description_hint),
                         isError = productState.descriptionError != null,
                         errorMessage = productState.descriptionError,
                         singleLine = false,
                         minLines = 5,
                         label = {
-                            Text(text = "Descrição")
+                            Text(text = stringResource(id = R.string.description))
                         }
                     )
                 }
@@ -447,10 +447,10 @@ fun Camera(viewModel: ProductFormViewModel) {
 
     val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) {
-            Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Permissão Salva", Toast.LENGTH_SHORT).show()
             cameraLauncher.launch(uri)
         } else {
-            Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Permissão Negada", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -478,7 +478,7 @@ fun Camera(viewModel: ProductFormViewModel) {
             if (imageUrl == null && viewModel.state.imagePath != Constants.BASE_URL) {
                 AsyncImage(
                     model = viewModel.state.imagePath,
-                    contentDescription = "Toque para adicionar uma foto",
+                    contentDescription = viewModel.state.name,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
@@ -497,12 +497,12 @@ fun Camera(viewModel: ProductFormViewModel) {
                 ) {
                     Icon(
                         imageVector = Octicons.Image24,
-                        contentDescription = "Sem imagem cadastrada",
+                        contentDescription = stringResource(id = R.string.no_image),
                         tint = GrayLight,
                         modifier = Modifier.size(64.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("Toque para adicionar uma foto", color = GrayLight)
+                    Text(stringResource(id = R.string.add_image), color = GrayLight)
                 }
             }
         }
