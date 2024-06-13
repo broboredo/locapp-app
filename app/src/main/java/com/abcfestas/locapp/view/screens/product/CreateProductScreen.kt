@@ -64,8 +64,8 @@ import com.abcfestas.locapp.view.components.Button
 import com.abcfestas.locapp.view.components.CancelButton
 import com.abcfestas.locapp.view.components.TextInputField
 import com.abcfestas.locapp.view.components.TextInputFieldWithError
-import com.abcfestas.locapp.viewmodel.product.CreateProductViewModel
 import com.abcfestas.locapp.viewmodel.product.ProductFormEvent
+import com.abcfestas.locapp.viewmodel.product.ProductFormViewModel
 import com.abcfestas.locapp.viewmodel.viewModelFactory
 import compose.icons.Octicons
 import compose.icons.octicons.Image24
@@ -79,8 +79,8 @@ import java.util.Locale
 fun CreateProductScreen(
     navController: NavController,
     productId: Int? = null,
-    viewModel: CreateProductViewModel = viewModel(factory = viewModelFactory {
-        CreateProductViewModel(LocAppApplication.appModule.productRepository)
+    viewModel: ProductFormViewModel = viewModel(factory = viewModelFactory {
+        ProductFormViewModel(LocAppApplication.appModule.productRepository)
     })
 ) {
     val step = viewModel.step
@@ -102,7 +102,7 @@ fun CreateProductScreen(
 
         viewModel.validationEvents.collect { event ->
             when(event) {
-                is CreateProductViewModel.ValidationEvent.Success -> {
+                is ProductFormViewModel.ValidationEvent.Success -> {
                     Toast.makeText(context, successMessage, Toast.LENGTH_LONG).show()
                     navController.popBackStack()
                 }
@@ -148,7 +148,7 @@ fun CreateProductScreen(
 
 @Composable
 fun ProductNameStep(
-    viewModel: CreateProductViewModel,
+    viewModel: ProductFormViewModel,
     navController: NavController
 ) {
     LaunchedEffect(Unit) {
@@ -223,7 +223,7 @@ fun ProductNameStep(
 }
 
 @Composable
-fun EditQuantityStep(viewModel: CreateProductViewModel) {
+fun EditQuantityStep(viewModel: ProductFormViewModel) {
     val productState = viewModel.state
 
     Box(
@@ -282,7 +282,7 @@ fun EditQuantityStep(viewModel: CreateProductViewModel) {
 }
 
 @Composable
-fun NewProductDetailsStep(viewModel: CreateProductViewModel, navController: NavController)
+fun NewProductDetailsStep(viewModel: ProductFormViewModel, navController: NavController)
 {
     val productState = viewModel.state
     val context: Context = LocalContext.current
@@ -448,7 +448,7 @@ fun WizardFormTopNavigation(
 }
 
 @Composable
-fun Camera(viewModel: CreateProductViewModel) {
+fun Camera(viewModel: ProductFormViewModel) {
     val context = LocalContext.current
     val file = context.createImageFile()
     val uri = FileProvider.getUriForFile(

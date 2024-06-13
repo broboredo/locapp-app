@@ -19,7 +19,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-class CreateProductViewModel(
+class ProductFormViewModel(
     private val repository: ProductRepository
 ) : ViewModel() {
     var step by mutableStateOf(1)
@@ -72,7 +72,7 @@ class CreateProductViewModel(
                     loadingProducts.value = false
                 }
                 is Resource.Error -> {
-                    Log.d("CreateProductViewModel", "loadProducts - ERROR: ${response.message}")
+                    Log.d("ERROR: ProductFormViewModel", "message: ${response.message}")
                     loadingProducts.value = false
                 }
             }
@@ -161,7 +161,7 @@ class CreateProductViewModel(
                     validationEventChannel.send(ValidationEvent.Success)
                 }
                 is Resource.Error -> {
-                    Log.d("ERROR: CreateProductViewModel::save", "Failed to submit form: ${result.message}")
+                    Log.d("ERROR: ProductFormViewModel::save", "Failed to submit form: ${result.message}")
                 }
             }
             loadingFormButton.value = false
@@ -189,8 +189,7 @@ class CreateProductViewModel(
                     )
                 }
                 is Resource.Error -> {
-                    Log.d("ERROR: CreateProductViewModel::fetchProduct", "Failed to fetch product: ${result.message}")
-                    TODO()
+                    Log.d("ERROR: ProductFormViewModel::fetchProduct", "Failed to fetch product: ${result.message}")
                 }
 
                 null -> TODO()
@@ -219,12 +218,11 @@ class CreateProductViewModel(
                     validationEventChannel.send(ValidationEvent.Success)
                 }
                 is Resource.Error -> {
-                    Log.d("ERROR: CreateProductViewModel::updateForm", "Failed to update form: ${result.message}")
-                    TODO()
+                    Log.d("ERROR: ProductFormViewModel::updateForm", "Failed to update form: ${result.message}")
                 }
 
                 null -> {
-                    Log.d("ERROR: CreateProductViewModel::updateForm", "Product ID is null")
+                    Log.d("ERROR: ProductFormViewModel::updateForm", "Product ID is null")
                     TODO()
                 }
             }
