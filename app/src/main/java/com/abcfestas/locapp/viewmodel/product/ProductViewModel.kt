@@ -31,8 +31,6 @@ class ProductViewModel (
                 search = productSearchable
             )
 
-            Log.d("LOG: PAGINATED antes ", "currentPage: ${currentPage.value}")
-
             when (response) {
                 is Resource.Success -> {
                     val responsePaginated = response.data!!.data
@@ -48,9 +46,7 @@ class ProductViewModel (
                         )
                     }
 
-
                     currentPage.value = responsePaginated.page
-                    Log.d("LOG: PAGINATED dps", "currentPage: ${currentPage.value} = ${responsePaginated.page}")
                     error.value = ""
                     if (currentPage.value > 1) {
                         products.value += customerEntries
@@ -61,7 +57,7 @@ class ProductViewModel (
                     hasNextPage.value = responsePaginated.totalPages > responsePaginated.page
                 }
                 is Resource.Error -> {
-                    Log.d("Product view model", "loadProducts - ERROR: ${response.message}")
+                    Log.d("ERROR: Product view model", "message: ${response.message}")
                     currentPage.value = 1
                     products.value =  listOf()
                     loading.value = false
