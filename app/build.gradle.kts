@@ -21,12 +21,22 @@ android {
     }
 
     buildTypes {
+        debug {
+            copy {
+                from("src/debug/assets/")
+                into("src/main/assets/")
+            }
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            copy {
+                from("src/debug/assets/")
+                into("src/main/assets/")
+            }
         }
     }
     compileOptions {
@@ -105,6 +115,7 @@ dependencies {
     // Coil
     implementation("io.coil-kt:coil:$coilVersion")
     implementation("com.google.accompanist:accompanist-coil:$accompanistVersion")
+    implementation("io.coil-kt:coil-compose:$coilVersion")
 
     // Viewmodel compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")

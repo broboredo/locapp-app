@@ -4,6 +4,23 @@
     <string name="new_product">Novo Móvel</string>
     <string name="product_name">Nome do móvel</string>
     <string name="quantity">Quantidade</string>
+    <string name="price">Preço</string>
+    <string name="description">Descrição</string>
     <string name="unavailable">Indisponíveis</string>
     <string name="available">Disponíveis</string>
+    <string name="enter_product_name">Digite o nome do móvel</string>
+    <string name="product_created_successfully">Móvel criado</string>
+    <string name="product_updated_successfully">Produto atualizado</string>
+    <string name="product_quantity_updated_successfully">Quantitade atualizada</string>
+    <string name="product_search_placeholder">Busque pelo móvel</string>
+    <string name="product_flow_step_one_title">Insira o nome do móvel</string>
+    <string name="product_flow_step_one_subtitle">Caso este móvel já exista, basta digitar o nome do móvel, selecionar ele na lista e, em seguida, acrescentar ou retirar a quantidade de itens existentes</string>
+    <string name="product_quantity">Quantidade deste móvel</string>
+    <string name="product_flow_step_two_update_quantity">Este móvel já está registrado. Atualize a quantidade atual para refletir o estoque correto.</string>
+    <string name="update_product">Atualizar móvel</string>
+    <string name="product_register_title">Cadastrar móvel</string>
+    <string name="product_name_hint">Adicione o nome do móvel</string>
+    <string name="product_quantity_hint">Adicione a quantidade que possui deste mesmo móvel</string>
+    <string name="product_price_hint">Qual valor de locação deste móvel (por unidade)?</string>
+    <string name="product_description_hint">Se tem alguma nota sobre este tipo de móvel, deixe anotado aqui...</string>
 </resources>

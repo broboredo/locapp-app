@@ -59,7 +59,6 @@ import kotlinx.coroutines.launch
 fun CustomerScreen(
     navController: NavController
 ) {
-    // TODO use LayoutDefault - remove modifier.scroll from layoutdefault
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -181,7 +180,6 @@ fun CustomerBox(
             .fillMaxWidth()
             .clickable {
                 navController.navigate(ScreensEnum.CustomerDetailsScreen.route.replace("{customerId}", customer.id.toString()))
-                Log.d("CustomerScreen", "Customer #${customer.id} ${customer.name} clicked")
             }
     ) {
         Column {

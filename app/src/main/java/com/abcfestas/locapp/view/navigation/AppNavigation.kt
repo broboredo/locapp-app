@@ -38,8 +38,7 @@ import com.abcfestas.locapp.view.screens.HomeScreen
 import com.abcfestas.locapp.view.screens.RentScreen
 import com.abcfestas.locapp.view.screens.customer.CustomerFormScreen
 import com.abcfestas.locapp.view.screens.customer.CustomerScreen
-import com.abcfestas.locapp.view.screens.product.NewProductStepOneScreen
-import com.abcfestas.locapp.view.screens.product.ProductDetailScreen
+import com.abcfestas.locapp.view.screens.product.ProductFormScreen
 import com.abcfestas.locapp.view.screens.product.ProductScreen
 
 @Composable
@@ -126,7 +125,7 @@ fun AppNavigation() {
                 )
             ) {
                 val customerId = remember {
-                    it.arguments?.getInt("customerId") ?: 0 // TODO create try catch or not found screen
+                    it.arguments?.getInt("customerId") ?: 0
                 }
                 CustomerFormScreen(navController, customerId)
             }
@@ -147,12 +146,12 @@ fun AppNavigation() {
                 )
             ) {
                 val productId = remember {
-                    it.arguments?.getInt("productId") ?: 0 // TODO create try catch or not found screen
+                    it.arguments?.getInt("productId") ?: 0
                 }
-                ProductDetailScreen(navController, productId)
+                ProductFormScreen(navController, productId)
             }
-            composable(route = ScreensEnum.NewProductStepOneScreen.route) {
-                NewProductStepOneScreen(navController)
+            composable(route = ScreensEnum.ProductFormScreen.route) {
+                ProductFormScreen(navController)
             }
         }
     }
