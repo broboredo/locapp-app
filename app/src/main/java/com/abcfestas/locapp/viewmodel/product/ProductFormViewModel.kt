@@ -174,7 +174,6 @@ class ProductFormViewModel(
         viewModelScope.launch {
             loadingScreen.value = true
             when (val result = (productId ?: selectedProduct?.let { it.id }?.let { it })?.let {
-                Log.d("LOG: get product id", "id: $it")
                 repository.getProductById(
                     it
                 )
@@ -202,7 +201,6 @@ class ProductFormViewModel(
 
     fun update(context: Context)
     {
-        Log.d("LOG: update", "id: ${state.id}")
         viewModelScope.launch {
             loadingFormButton.value = true
             val result = state.id?.let { repository.updateProduct(it, state) }

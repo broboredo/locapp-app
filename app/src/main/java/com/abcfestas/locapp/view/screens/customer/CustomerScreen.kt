@@ -180,7 +180,6 @@ fun CustomerBox(
             .fillMaxWidth()
             .clickable {
                 navController.navigate(ScreensEnum.CustomerDetailsScreen.route.replace("{customerId}", customer.id.toString()))
-                Log.d("CustomerScreen", "Customer #${customer.id} ${customer.name} clicked")
             }
     ) {
         Column {
