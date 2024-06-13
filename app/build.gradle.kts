@@ -34,7 +34,7 @@ android {
                 "proguard-rules.pro"
             )
             copy {
-                from("src/main/release/config.properties")
+                from("src/debug/assets/")
                 into("src/main/assets/")
             }
         }

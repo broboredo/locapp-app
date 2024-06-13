@@ -1,4 +1,7 @@
 # LocApp Android
 
-## First Step
-Generate your config_dev.properties (`src/main/assets`) using the config_example.properties as example
+## Debug
+Create your `config.properties` int `src/debug/assets`. Example file is on `src/main/assets/config_example.properties`
+
+## Release
+Create your `config.properties` int `src/release/assets`. Example file is on `src/main/assets/config_example.properties`
