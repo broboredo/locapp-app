@@ -26,6 +26,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -37,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -47,7 +49,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.abcfestas.locapp.LocAppApplication
 import com.abcfestas.locapp.R
@@ -57,6 +58,7 @@ import com.abcfestas.locapp.ui.theme.Typography
 import com.abcfestas.locapp.util.Constants
 import com.abcfestas.locapp.view.components.Button
 import com.abcfestas.locapp.view.components.CancelButton
+import com.abcfestas.locapp.view.components.LazyImage
 import com.abcfestas.locapp.view.components.TextInputField
 import com.abcfestas.locapp.view.components.TextInputFieldWithError
 import com.abcfestas.locapp.viewmodel.product.ProductFormEvent
@@ -99,8 +101,16 @@ fun ProductFormScreen(
             }
         }
     }
-
-    ContentBasedOnStep(navController, productId, viewModel)
+    if (viewModel.loadingScreen.value) {
+        Box(
+            modifier = Modifier.fillMaxSize().background(color = Color.White),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    } else {
+        ContentBasedOnStep(navController, productId, viewModel)
+    }
 }
 
 @Composable
@@ -296,7 +306,7 @@ fun ProductForm(viewModel: ProductFormViewModel, navController: NavController)
                          R.string.update_product
                     } else {
                         R.string.product_register_title
-                    }, viewModel.productNameOnInput.value),
+                    }),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = Typography.titleLarge,
@@ -475,10 +485,14 @@ fun Camera(viewModel: ProductFormViewModel) {
                 .background(Gray),
             contentAlignment = Alignment.Center
         ) {
-            if (imageUrl == null && viewModel.state.imagePath != Constants.BASE_URL) {
-                AsyncImage(
-                    model = viewModel.state.imagePath,
-                    contentDescription = viewModel.state.name,
+            if (
+                imageUrl == null &&
+                viewModel.state.imagePath != null &&
+                viewModel.state.imagePath != Constants.BASE_URL
+            ) {
+                LazyImage(
+                    url = viewModel.state.imagePath,
+                    description = viewModel.state.name,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )

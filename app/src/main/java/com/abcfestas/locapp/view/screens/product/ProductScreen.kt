@@ -1,5 +1,6 @@
 package com.abcfestas.locapp.view.screens.product
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,20 +38,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
 import com.abcfestas.locapp.LocAppApplication
 import com.abcfestas.locapp.R
 import com.abcfestas.locapp.data.models.Product
 import com.abcfestas.locapp.ui.theme.Green500
 import com.abcfestas.locapp.ui.theme.Typography
 import com.abcfestas.locapp.view.components.Button
+import com.abcfestas.locapp.view.components.LazyImage
 import com.abcfestas.locapp.view.components.LostConnection
 import com.abcfestas.locapp.view.navigation.ScreensEnum
 import com.abcfestas.locapp.viewmodel.product.ProductViewModel
@@ -184,16 +184,14 @@ fun ProductBox(product: Product, navController: NavController)
                 )
             }
     ) {
-        AsyncImage(
-            model = product.imagePath,
-            contentDescription = product.name,
+        LazyImage(
+            url = product.imagePath!!,
+            description = product.name,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .clip(CircleShape)
                 .width(64.dp)
-                .height(64.dp),
-            fallback = painterResource(id = R.drawable.img_cant_load),
-            error = painterResource(id = R.drawable.img_error)
+                .height(64.dp)
         )
 
         Column(modifier = Modifier.padding(start = 24.dp)) {

@@ -5,6 +5,7 @@ import com.abcfestas.locapp.data.remote.IApi
 import com.abcfestas.locapp.repository.CustomerRepository
 import com.abcfestas.locapp.repository.ProductRepository
 import com.abcfestas.locapp.util.Constants
+import com.abcfestas.locapp.util.HeaderInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -26,6 +27,7 @@ class AppModuleImpl(
 
     private val client = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
+        .addInterceptor(HeaderInterceptor())
         .build()
 
     override val api: IApi by lazy {

@@ -21,12 +21,22 @@ android {
     }
 
     buildTypes {
+        debug {
+            copy {
+                from("src/debug/assets/")
+                into("src/main/assets/")
+            }
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            copy {
+                from("src/main/release/config.properties")
+                into("src/main/assets/")
+            }
         }
     }
     compileOptions {

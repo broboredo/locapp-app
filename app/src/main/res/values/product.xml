@@ -18,7 +18,7 @@
     <string name="product_quantity">Quantidade deste móvel</string>
     <string name="product_flow_step_two_update_quantity">Este móvel já está registrado. Atualize a quantidade atual para refletir o estoque correto.</string>
     <string name="update_product">Atualizar móvel</string>
-    <string name="product_register_title">Cadastro: %1$d</string>
+    <string name="product_register_title">Cadastrar móvel</string>
     <string name="product_name_hint">Adicione o nome do móvel</string>
     <string name="product_quantity_hint">Adicione a quantidade que possui deste mesmo móvel</string>
     <string name="product_price_hint">Qual valor de locação deste móvel (por unidade)?</string>
