@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,19 +24,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.abcfestas.locapp.LocAppApplication
 import com.abcfestas.locapp.R
 import com.abcfestas.locapp.data.models.Product
 import com.abcfestas.locapp.ui.theme.Green500
 import com.abcfestas.locapp.ui.theme.Typography
 import com.abcfestas.locapp.view.components.Button
-import com.abcfestas.locapp.view.components.CircleImage
 import com.abcfestas.locapp.view.components.LostConnection
 import com.abcfestas.locapp.view.navigation.ScreensEnum
 import com.abcfestas.locapp.viewmodel.product.ProductViewModel
@@ -55,7 +60,7 @@ fun ProductScreen(
             Text(text = stringResource(R.string.products), style = Typography.titleLarge)
             Spacer(modifier = Modifier.height(16.dp))
 
-            ListProducts()
+            ListProducts(navController)
         }
 
         Button(
@@ -70,6 +75,7 @@ fun ProductScreen(
 
 @Composable
 fun ListProducts(
+    navController: NavController,
     viewModel: ProductViewModel = viewModel(factory = viewModelFactory {
         ProductViewModel(LocAppApplication.appModule.productRepository)
     })
@@ -87,7 +93,7 @@ fun ListProducts(
             // TODO: pagination
             // viewModel.loadProducts()
             Log.d("Product Screen", "products: ${productList.count()}")
-            ProductBox(product = it)
+            ProductBox(product = it, navController)
         }
     }
 
@@ -109,26 +115,37 @@ fun ListProducts(
 @Composable
 fun ProductBox(
     product: Product,
-    quantityRented: Int? = 0,
-    imageResource: Int? = null
+    navController: NavController,
+    quantityRented: Int? = 0
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                Log.d("Product BOX", "product_id: ${product.id}")
+                navController.navigate(
+                    ScreensEnum.ProductDetailsScreen.route.replace(
+                        "{productId}",
+                        product.id.toString()
+                    )
+                )
             }
     ) {
-        CircleImage(
-            imageResource = imageResource,
-            contentDescription = "Image"
+        AsyncImage(
+            model = product.imagePath,
+            contentDescription = product.name,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .clip(CircleShape)
+                .width(64.dp)
+                .height(64.dp),
+            fallback = painterResource(id = R.drawable.img_cant_load),
+            error = painterResource(id = R.drawable.img_error)
         )
 
         Column(modifier = Modifier.padding(start = 24.dp)) {
             Text(text = product.name, style = Typography.bodyLarge)
             Text(text = "${stringResource(R.string.quantity)}: ${product.quantity}", style = Typography.bodyMedium)
-            Text(text = "${stringResource(R.string.unavailable)}: $quantityRented", style = Typography.bodyMedium)
         }
     }
 

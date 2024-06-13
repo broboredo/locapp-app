@@ -9,5 +9,6 @@ data class ProductFormState(
     val price: Double? = 1.00,
     val priceError: String? = null,
     val description: String = "",
-    val descriptionError: String? = null
+    val descriptionError: String? = null,
+    val imagePath: String? = null
 )

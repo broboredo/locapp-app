@@ -5,6 +5,7 @@ data class ProductData(
     val DeletedAt: String,
     val Description: String,
     val ID: Int,
+    val ImagePath: String,
     val Name: String,
     val Price: Double,
     val Quantity: Int,

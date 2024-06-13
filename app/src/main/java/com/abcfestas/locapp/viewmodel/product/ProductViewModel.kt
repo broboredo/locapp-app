@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.abcfestas.locapp.data.models.Product
 import com.abcfestas.locapp.repository.ProductRepository
+import com.abcfestas.locapp.util.Constants
 import com.abcfestas.locapp.util.Resource
 import kotlinx.coroutines.launch
 
@@ -38,7 +39,8 @@ class ProductViewModel (
                             name = entry.Name,
                             description = entry.Description,
                             price = entry.Price,
-                            quantity = entry.Quantity
+                            quantity = entry.Quantity,
+                            imagePath = "${Constants.API_URL}${entry.ImagePath}"
                         )
                     }
                     // TODO: pagination

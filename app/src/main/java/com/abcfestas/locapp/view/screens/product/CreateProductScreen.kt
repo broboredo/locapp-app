@@ -53,6 +53,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.abcfestas.locapp.LocAppApplication
 import com.abcfestas.locapp.R
@@ -77,6 +78,7 @@ import java.util.Locale
 @Composable
 fun CreateProductScreen(
     navController: NavController,
+    productId: Int? = null,
     viewModel: CreateProductViewModel = viewModel(factory = viewModelFactory {
         CreateProductViewModel(LocAppApplication.appModule.productRepository)
     })
@@ -84,7 +86,9 @@ fun CreateProductScreen(
     val step = viewModel.step
     val context = LocalContext.current
     val successMessage = stringResource(
-        id = if (step == 1) {
+        id = if (productId != null) {
+            R.string.product_quantity_updated_successfully
+        } else if (step == 1) {
             R.string.product_created_successfully
         } else {
             R.string.product_quantity_updated_successfully
@@ -92,6 +96,10 @@ fun CreateProductScreen(
     )
 
     LaunchedEffect(Unit) {
+        if (productId != null) {
+            viewModel.fetchProduct(productId)
+        }
+
         viewModel.validationEvents.collect { event ->
             when(event) {
                 is CreateProductViewModel.ValidationEvent.Success -> {
@@ -102,33 +110,39 @@ fun CreateProductScreen(
         }
     }
 
-    AnimatedContent(
-        targetState = step,
-        transitionSpec = {
-            slideInHorizontally { fullWidth -> fullWidth
-            } togetherWith slideOutHorizontally { fullWidth -> -fullWidth
-            }
-        }, label = ""
-    ) { targetStep ->
-        when (targetStep) {
-            1 -> ProductNameStep(viewModel, navController)
-            2 -> {
-                if (viewModel.selectedProduct != null) {
-                    if (viewModel.loadingScreen.value) {
-                        Box(
-                            modifier = Modifier.fillMaxSize().background(color = Color.White),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
+    if (productId == null) {
+        AnimatedContent(
+            targetState = step,
+            transitionSpec = {
+                slideInHorizontally { fullWidth -> fullWidth
+                } togetherWith slideOutHorizontally { fullWidth -> -fullWidth
+                }
+            }, label = ""
+        ) { targetStep ->
+            when (targetStep) {
+                1 -> ProductNameStep(viewModel, navController)
+                2 -> {
+                    if (viewModel.selectedProduct != null) {
+                        if (viewModel.loadingScreen.value) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(color = Color.White),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        } else {
+                            EditQuantityStep(viewModel)
                         }
                     } else {
-                        EditQuantityStep(viewModel)
+                        NewProductDetailsStep(viewModel, navController)
                     }
-                } else {
-                    NewProductDetailsStep(viewModel)
                 }
             }
         }
+    } else {
+        NewProductDetailsStep(viewModel, navController)
     }
 }
 
@@ -268,7 +282,7 @@ fun EditQuantityStep(viewModel: CreateProductViewModel) {
 }
 
 @Composable
-fun NewProductDetailsStep(viewModel: CreateProductViewModel)
+fun NewProductDetailsStep(viewModel: CreateProductViewModel, navController: NavController)
 {
     val productState = viewModel.state
     val context: Context = LocalContext.current
@@ -289,12 +303,20 @@ fun NewProductDetailsStep(viewModel: CreateProductViewModel)
             ) {
                 CancelButton(
                     onClick = {
-                        viewModel.previousStep()
+                        if (viewModel.isUpdateForm) {
+                            navController.popBackStack()
+                        } else {
+                            viewModel.previousStep()
+                        }
                     }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Cadastro: ${viewModel.productNameOnInput.value}",
+                    text = if (viewModel.isUpdateForm) {
+                        "Atualizar móvel"
+                    } else {
+                        "Cadastro: ${viewModel.productNameOnInput.value}"
+                    },
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = Typography.titleLarge,
@@ -314,6 +336,21 @@ fun NewProductDetailsStep(viewModel: CreateProductViewModel)
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ) {
+                    if (viewModel.isUpdateForm) {
+                        TextInputFieldWithError(
+                            value = productState.name.toString(),
+                            onValueChange = {
+                                viewModel.onEvent(ProductFormEvent.NameChanged(it))
+                            },
+                            placeholder = "Adicione o nome do móvel",
+                            isError = productState.nameError != null,
+                            errorMessage = productState.nameError,
+                            label = {
+                                Text(text = "Móvel")
+                            }
+                        )
+                    }
+
                     TextInputFieldWithError(
                         value = productState.quantity.toString(),
                         onValueChange = {
@@ -368,9 +405,17 @@ fun NewProductDetailsStep(viewModel: CreateProductViewModel)
         }
 
         Button(
-            label = stringResource(id = R.string.save),
+            label = stringResource(id = if (viewModel.isUpdateForm) {
+                R.string.update
+            } else {
+                R.string.save
+            }),
             onClick = {
-                viewModel.save(context)
+                if (viewModel.isUpdateForm) {
+                    viewModel.update(context)
+                } else {
+                    viewModel.save(context)
+                }
             },
             modifier = Modifier
                 .padding(16.dp)
@@ -403,7 +448,7 @@ fun WizardFormTopNavigation(
 }
 
 @Composable
-fun Camera(currentImageUri: String? = null, viewModel: CreateProductViewModel) {
+fun Camera(viewModel: CreateProductViewModel) {
     val context = LocalContext.current
     val file = context.createImageFile()
     val uri = FileProvider.getUriForFile(
@@ -411,8 +456,7 @@ fun Camera(currentImageUri: String? = null, viewModel: CreateProductViewModel) {
         context.getString(R.string.fileprovider),
         file
     )
-
-    var imageUrl by remember { mutableStateOf<Any?>(currentImageUri) }
+    var imageUrl by remember { mutableStateOf<Any?>(null) }
 
     val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
@@ -451,7 +495,14 @@ fun Camera(currentImageUri: String? = null, viewModel: CreateProductViewModel) {
                 .background(Gray),
             contentAlignment = Alignment.Center
         ) {
-            if (imageUrl != null) {
+            if (imageUrl == null && viewModel.state.imagePath != null) {
+                AsyncImage(
+                    model = viewModel.state.imagePath,
+                    contentDescription = "Toque para adicionar uma foto",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            } else if (imageUrl != null) {
                 Image(
                     painter = rememberImagePainter(data = imageUrl),
                     contentDescription = null,

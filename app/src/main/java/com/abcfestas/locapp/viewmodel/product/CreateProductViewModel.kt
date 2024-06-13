@@ -13,6 +13,7 @@ import com.abcfestas.locapp.data.models.Product
 import com.abcfestas.locapp.domain.use_case.form_validation.ValidatePrice
 import com.abcfestas.locapp.domain.use_case.form_validation.ValidateRequired
 import com.abcfestas.locapp.repository.ProductRepository
+import com.abcfestas.locapp.util.Constants
 import com.abcfestas.locapp.util.Resource
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -21,12 +22,12 @@ import kotlinx.coroutines.launch
 class CreateProductViewModel(
     private val repository: ProductRepository
 ) : ViewModel() {
-    // TODO:
     var step by mutableStateOf(1)
         private set
     var selectedProduct: Product? by mutableStateOf(null)
 
     var state by mutableStateOf(ProductFormState())
+    var isUpdateForm by mutableStateOf(false);
     var productList = mutableStateOf<List<Product>>(listOf())
 
     var imageUri: MutableState<Uri?> = mutableStateOf(null)
@@ -41,7 +42,6 @@ class CreateProductViewModel(
     val loadingFormButton = mutableStateOf(false)
     val loadingScreen = mutableStateOf(false)
 
-    // TODO product state
     var productNameOnInput = mutableStateOf("")
 
     fun loadProducts() {
@@ -119,10 +119,10 @@ class CreateProductViewModel(
                 state = state.copy(description =  event.description)
             }
             is ProductFormEvent.Save -> {
-                // TODO(save())
+                // TODO(save() with context)
             }
             is ProductFormEvent.Update -> {
-                update()
+                // TODO(update() with context)
             }
         }
     }
@@ -168,18 +168,24 @@ class CreateProductViewModel(
         }
     }
 
-    private fun fetchProduct() {
+    fun fetchProduct(productId: Int? = null) {
+        isUpdateForm = productId != null
         viewModelScope.launch {
             loadingScreen.value = true
-            when (val result =
-                selectedProduct?.let { it.id }?.let { repository.getProductById(it) }) {
+            when (val result = (productId ?: selectedProduct?.let { it.id }?.let { it })?.let {
+                repository.getProductById(
+                    it
+                )
+            }) {
                 is Resource.Success -> {
                     val product = result.data!!.data
                     state = state.copy(
                         id = product.ID,
                         name = product.Name,
                         quantity = product.Quantity,
-                        description =  product.Description
+                        description =  product.Description,
+                        price = product.Price,
+                        imagePath = "${Constants.API_URL}${product.ImagePath}"
                     )
                 }
                 is Resource.Error -> {
@@ -193,11 +199,21 @@ class CreateProductViewModel(
         }
     }
 
-    fun update()
+    fun update(context: Context)
     {
         viewModelScope.launch {
             loadingFormButton.value = true
             val result = state.id?.let { repository.updateProduct(it, state) }
+            if (imageUri.value != null) {
+                val resultImage = state.id?.let {
+                    repository.syncImage(
+                        context,
+                        it,
+                        imageUri.value!!
+                    )
+                }
+            }
+
             when (result) {
                 is Resource.Success -> {
                     validationEventChannel.send(ValidationEvent.Success)
